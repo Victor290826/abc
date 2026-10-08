@@ -1,12 +1,593 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Finanças Pessoais</title>
+    <style>
+        :root {
+            --cor-primaria: #4CAF50;
+            --cor-secundaria: #f8fafc;
+            --cor-texto: #ffffff;
+            --cor-fundo: #0b0f17;
+            --cor-borda: #1e2b3e;
+            --cor-teal: #008080;
+            --cor-navy: #000080;
+            --cor-fundo-navy: #1e2b3e;
+            --cor-gray: #64748b;
+            --cor-indigo-escuro: #4B0082;
+            --cor-verde-esmeralda: #046307;
+            --cor-grafite: #2C2C2C;
+            --cor-sucesso: #16a34a;
+            --cor-perigo: #dc2626;
+            --cor-fundo-caixa: #2e3e58;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            width: 100%;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            display: flex;  
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        main {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        
+        header.header-main {
+            width: 100%;
+            color: #ffffff;
+            text-align: left;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            background-color: var(--cor-fundo);
+            padding: 16px 24px;
+            display: flex;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .header-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        header h1 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .app-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #34d399, #059669);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(52, 211, 153, 0.25);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-config {
+            background-color: #151c2a;
+            color: #ffffff;
+            border: 1px solid var(--cor-borda);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-config:hover {
+            background-color: #1e2b3e;
+            border-color: #334155;
+        }
+
+        .subtitulo {
+            font-size: 1rem;
+            color: #8593a7;
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);          
+        }
+        
+        .titulo-secao {
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #334155;
+        }
+
+        /* CARDS DO TOPO (3 Colunas) */
+        .tres-colunas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card-hoje, .card-mes, .card-renda {
+            border: 1px solid var(--cor-borda);
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #151C2A;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 170px;
+        }
+
+        .valor-hoje {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #34D399;   
+            margin: 4px 0;
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: #dcfce7;
+            color: #15803d;
+            width: fit-content;
+            margin-top: 6px;
+        }
+
+        .info-mes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .barra-progresso {
+            width: 100%;
+            height: 10px;
+            background-color: var(--cor-borda);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progresso-preenchimento {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* FORMULÁRIO E HISTÓRICO LADO A LADO */
+        .duas-colunas {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .card-formulario, .card-historico-sec {
+            flex: 1;
+            border: 1px solid var(--cor-borda);
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #151C2A;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 2px solid var(--cor-borda);
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+        }
+
+        .input-container span {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cor-gray);
+            margin-right: 6px;
+        }
+
+        .input-valor {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1e293b;
+            background: transparent;
+        }
+
+        .cardd {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-categoria {
+            color: #ffffff;
+            border: none;
+            padding: 14px 6px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-categoria:active {
+            transform: scale(0.97);
+        }
+
+        .btn-salvar {
+            width: 100%;
+            background-color: var(--cor-sucesso);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-salvar:hover {
+            background-color: #15803d;
+        }
+
+        .historico-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .item-historico {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background-color: #0b0f17;
+            border-radius: 8px;
+            border: 1px solid var(--cor-borda);
+            font-size: 0.9rem;
+        }
+
+        .item-historico .descricao {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .item-historico .valor {
+            font-weight: 700;
+            color: var(--cor-perigo);
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, Word!</h1>
-    <h2>Kecio</h2>
+
+    <header class="header-main">
+        <div class="header-left">
+            <div class="app-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+                    <path d="M18 12a2 2 0 0 0 0 4h4v-4z"/>
+                </svg>
+            </div>
+            <div class="header-info">
+                <h1>Finanças Pessoais</h1>
+                <p class="subtitulo">Outubro de 2026</p>
+            </div>
+        </div> 
+        
+        <div class="header-right">
+            <button class="btn-config">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+                Configurar Valores Reais
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            
+            <!-- CARDS RESUMO DO TOPO -->
+            <div class="tres-colunas">
+                <!-- CARD 1: HOJE -->
+                <div class="card-hoje">
+                    <div class="titulo-secao">DISPONÍVEL PARA HOJE</div>
+                    <div class="valor-hoje">R$ 0,00</div>
+                    <div class="badge-status">🟢 Dentro da meta</div>
+                </div>
+
+                <!-- CARD 2: MÊS -->
+                <div class="card-mes">
+                    <div class="titulo-secao">RESUMO DO MÊS</div>    
+                    <div class="info-mes">
+                        <span>Gastos / Teto:</span>
+                        <span>R$ 0,00</span>
+                    </div>
+                    <div class="barra-progresso">
+                        <div class="progresso-preenchimento"></div>
+                    </div>
+                </div>
+            
+                <!-- CARD 3: RENDA -->
+                <div class="card-renda">
+                    <div class="titulo-secao">RENDA E ECONOMIA</div>
+                    <div class="valor-renda">
+                        RENDA REGISTRADA:
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #34d399; margin-top: 8px;">R$ 3.000,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULÁRIO E HISTÓRICO LADO A LADO -->
+            <div class="duas-colunas">
+                <div class="card-formulario">
+                    <div class="titulo-secao">Registrar Novo Gasto</div>
+                
+                    <!-- Input de Valor -->
+                    <div class="input-container">
+                        <span>R$</span>
+                        <input type="number" class="input-valor" placeholder="0,00" step="0.01" id="inputValor">
+                    </div>
+         
+                    <!-- Botões de Categoria -->
+                    <div class="cardd">
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">🍔 Alimentação</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">🛒 Mercado</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">🚗 Transporte</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">🏠 Moradia</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">🎮 Lazer</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">💊 Saúde</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">🛍️ Compras</button>
+                        <button class="btn-categoria" style="background-color: var(--cor-fundo-navy);">➕ Outros</button>
+                    </div>
+
+                    <!-- Botão de Salvar -->
+                    <button class="btn-salvar">Guardar Gasto</button>
+                </div>
+                
+                <div class="card-historico-sec">
+                    <div class="titulo-secao">Histórico Do Mês</div>
+                    <p style="color: var(--cor-gray); font-size: 0.9rem;">Filtros e resumo de lançamentos...</p>
+                </div>
+            </div>
+
+            <!-- HISTÓRICO RECENTE -->
+            <div class="titulo-secao">Histórico Recente (Hoje)</div>
+            <div class="card-historico-recente">
+                <div class="historico-lista"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+    // ==========================================
+    // 1. ESTADO E CONFIGURAÇÃO DA APLICAÇÃO
+    // ==========================================
+    const config = {
+        tetoMensal: 2000.00,
+        gastosMesAnteriores: 1160.00
+    };
+
+    let transacoesHoje = [
+        { id: 1, categoria: '🍔 Almoço', valor: 25.00 },
+        { id: 2, categoria: '🚗 Uber', valor: 15.00 }
+    ];
+
+    let categoriaSelecionada = null;
+
+    // ==========================================
+    // 2. SELEÇÃO DE ELEMENTOS DO DOM
+    // ==========================================
+    const elValorHoje = document.querySelector('.valor-hoje');
+    const elBadgeStatus = document.querySelector('.badge-status');
+    const elInfoMes = document.querySelector('.info-mes span:last-child');
+    const elProgressoPreenchimento = document.querySelector('.progresso-preenchimento');
+    const elInputValor = document.getElementById('inputValor');
+    const elBtnsCategoria = document.querySelectorAll('.btn-categoria');
+    const elBtnSalvar = document.querySelector('.btn-salvar');
+    const elHistoricoLista = document.querySelector('.historico-lista');
+
+    // ==========================================
+    // 3. FUNÇÕES AUXILIARES DE CÁLCULO E DATA
+    // ==========================================
+    function formatarMoeda(valor) {
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function obterDiasRestantesNoMes() {
+        const hoje = new Date();
+        const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
+        return (ultimoDia - hoje.getDate()) + 1;
+    }
+
+    function calcularFinancas() {
+        const totalHoje = transacoesHoje.reduce((acc, t) => acc + t.valor, 0);
+        const totalMes = config.gastosMesAnteriores + totalHoje;
+        const saldoMesLivreInícioHoje = config.tetoMensal - config.gastosMesAnteriores;
+        const diasRestantes = obterDiasRestantesNoMes();
+        const cotaDiariaHoje = saldoMesLivreInícioHoje / diasRestantes;
+        const disponivelHoje = cotaDiariaHoje - totalHoje;
+        const percentualMes = Math.min((totalMes / config.tetoMensal) * 100, 100);
+
+        return {
+            totalHoje,
+            totalMes,
+            disponivelHoje,
+            percentualMes
+        };
+    }
+
+    // ==========================================
+    // 4. ATUALIZAÇÃO DA INTERFACE (RENDER)
+    // ==========================================
+    function atualizarInterface() {
+        const financas = calcularFinancas();
+
+        // 1. Atualizar Card 1: Hoje
+        elValorHoje.textContent = formatarMoeda(financas.disponivelHoje);
+
+        if (financas.disponivelHoje >= 0) {
+            elBadgeStatus.textContent = '🟢 Dentro da meta';
+            elBadgeStatus.style.backgroundColor = '#dcfce7';
+            elBadgeStatus.style.color = '#15803d';
+            elValorHoje.style.color = '#34D399';
+        } else {
+            const excesso = Math.abs(financas.disponivelHoje);
+            elBadgeStatus.textContent = `🔴 Ultrapassou ${formatarMoeda(excesso)}`;
+            elBadgeStatus.style.backgroundColor = '#fee2e2';
+            elBadgeStatus.style.color = '#dc2626';
+            elValorHoje.style.color = '#dc2626';
+        }
+
+        // 2. Atualizar Card 2: Mês
+        elInfoMes.textContent = `${formatarMoeda(financas.totalMes)} / ${formatarMoeda(config.tetoMensal)}`;
+        elProgressoPreenchimento.style.width = `${financas.percentualMes}%`;
+
+        if (financas.totalMes > config.tetoMensal) {
+            elProgressoPreenchimento.style.background = 'var(--cor-perigo)';
+        } else {
+            elProgressoPreenchimento.style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
+        }
+
+        // 3. Atualizar Lista de Histórico
+        renderizarHistorico();
+    }
+
+    function renderizarHistorico() {
+        elHistoricoLista.innerHTML = '';
+
+        if (transacoesHoje.length === 0) {
+            elHistoricoLista.innerHTML = '<div style="text-align: center; color: var(--cor-gray); padding: 10px;">Nenhum gasto registado hoje.</div>';
+            return;
+        }
+
+        [...transacoesHoje].reverse().forEach(item => {
+            const divItem = document.createElement('div');
+            divItem.className = 'item-historico';
+            divItem.innerHTML = `
+                <span class="descricao">${item.categoria}</span>
+                <span class="valor">- ${formatarMoeda(item.valor)}</span>
+            `;
+            elHistoricoLista.appendChild(divItem);
+        });
+    }
+
+    // ==========================================
+    // 5. EVENTOS E INTERAÇÃO
+    // ==========================================
+    elBtnsCategoria.forEach(btn => {
+        btn.addEventListener('click', () => {
+            elBtnsCategoria.forEach(b => {
+                b.style.outline = 'none';
+                b.style.opacity = '0.7';
+            });
+
+            btn.style.outline = '2px solid #34d399';
+            btn.style.opacity = '1';
+            categoriaSelecionada = btn.textContent.trim();
+        });
+    });
+
+    elBtnSalvar.addEventListener('click', () => {
+        const valorDigitado = parseFloat(elInputValor.value);
+
+        if (isNaN(valorDigitado) || valorDigitado <= 0) {
+            alert('Por favor, insira um valor válido maior que zero.');
+            return;
+        }
+
+        if (!categoriaSelecionada) {
+            alert('Por favor, selecione uma categoria.');
+            return;
+        }
+
+        const novaTransacao = {
+            id: Date.now(),
+            categoria: categoriaSelecionada,
+            valor: valorDigitado
+        };
+
+        transacoesHoje.push(novaTransacao);
+
+        elInputValor.value = '';
+        categoriaSelecionada = null;
+        elBtnsCategoria.forEach(b => {
+            b.style.outline = 'none';
+            b.style.opacity = '1';
+        });
+
+        atualizarInterface();
+    });
+
+    // Inicialização
+    atualizarInterface();
+    </script>
 </body>
 </html>
